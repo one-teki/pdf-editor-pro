@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Editor Pro</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- ヘッダー -->
+        <header class="header">
+            <div class="logo">
+                <h1>📄 PDF Editor Pro</h1>
+            </div>
+            <nav class="nav-menu">
+                <button class="nav-btn" data-action="new">新規</button>
+                <button class="nav-btn" data-action="open">開く</button>
+                <button class="nav-btn" data-action="save">保存</button>
+                <button class="nav-btn" data-action="merge">結合</button>
+                <button class="nav-btn" data-action="split">分割</button>
+            </nav>
+        </header>
+
+        <!-- ツールバー -->
+        <div class="toolbar">
+            <div class="tool-group">
+                <button class="tool-btn" id="addTextBtn" title="テキスト追加">
+                    <span>📝</span> テキスト
+                </button>
+                <button class="tool-btn" id="deletePageBtn" title="ページ削除">
+                    <span>🗑️</span> 削除
+                </button>
+                <button class="tool-btn" id="rotateBtn" title="回転">
+                    <span>🔄</span> 回転
+                </button>
+            </div>
+            <div class="tool-group">
+                <input type="file" id="fileInput" accept=".pdf" multiple style="display: none;">
+                <button class="tool-btn" onclick="document.getElementById('fileInput').click()">
+                    <span>📁</span> ファイル選択
+                </button>
+            </div>
+        </div>
+
+        <!-- メインコンテンツ -->
+        <div class="main-content">
+            <!-- サイドバー -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <h3>ページ一覧</h3>
+                    <span class="page-count">0 ページ</span>
+                </div>
+                <div class="page-thumbnails" id="pageThumbnails">
+                    <!-- ページサムネイルがここに表示される -->
+                </div>
+            </aside>
+
+            <!-- PDF表示エリア -->
+            <main class="pdf-viewer">
+                <div class="drop-zone" id="dropZone">
+                    <div class="drop-content">
+                        <div class="drop-icon">📄</div>
+                        <h2>PDFファイルをドロップ</h2>
+                        <p>または「ファイル選択」ボタンをクリック</p>
+                        <p class="supported-formats">対応形式: PDF</p>
+                    </div>
+                </div>
+                
+                <div class="pdf-canvas-container" id="pdfCanvasContainer" style="display: none;">
+                    <canvas id="pdfCanvas"></canvas>
+                    <div class="text-overlay" id="textOverlay"></div>
+                </div>
+
+                <!-- ページナビゲーション -->
+                <div class="page-navigation" id="pageNavigation" style="display: none;">
+                    <button id="prevPageBtn">◀ 前</button>
+                    <span class="page-info">
+                        <input type="number" id="currentPageInput" min="1" value="1">
+                        / <span id="totalPages">1</span>
+                    </span>
+                    <button id="nextPageBtn">次 ▶</button>
+                    <div class="zoom-controls">
+                        <button id="zoomOutBtn">🔍-</button>
+                        <span id="zoomLevel">100%</span>
+                        <button id="zoomInBtn">🔍+</button>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- 進捗バー -->
+        <div class="progress-container" id="progressContainer" style="display: none;">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">処理中...</div>
+        </div>
+
+        <!-- モーダル -->
+        <div class="modal" id="textModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>テキスト追加</h3>
+                    <button class="close-btn" onclick="closeModal('textModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>テキスト:</label>
+                        <textarea id="textInput" placeholder="追加するテキストを入力"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>フォントサイズ:</label>
+                            <input type="number" id="fontSizeInput" value="12" min="8" max="72">
+                        </div>
+                        <div class="form-group">
+                            <label>色:</label>
+                            <input type="color" id="textColorInput" value="#000000">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>X座標:</label>
+                            <input type="number" id="textXInput" value="100">
+                        </div>
+                        <div class="form-group">
+                            <label>Y座標:</label>
+                            <input type="number" id="textYInput" value="100">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal('textModal')">キャンセル</button>
+                    <button class="btn-primary" onclick="addTextToPDF()">追加</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分割モーダル -->
+        <div class="modal" id="splitModal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>PDF分割</h3>
+                    <button class="close-btn" onclick="closeModal('splitModal')">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>分割方法:</label>
+                        <select id="splitMethod">
+                            <option value="pages">ページ範囲指定</option>
+                            <option value="every">N ページごと</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="pageRangeGroup">
+                        <label>ページ範囲 (例: 1-3, 5, 7-9):</label>
+                        <input type="text" id="pageRangeInput" placeholder="1-3, 5, 7-9">
+                    </div>
+                    <div class="form-group" id="everyPagesGroup" style="display: none;">
+                        <label>何ページごとに分割:</label>
+                        <input type="number" id="everyPagesInput" value="1" min="1">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn-secondary" onclick="closeModal('splitModal')">キャンセル</button>
+                    <button class="btn-primary" onclick="splitPDF()">分割</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
