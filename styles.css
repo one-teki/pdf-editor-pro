@@ -1,73 +1,52 @@
-* { box-sizing: border-box; margin:0; padding:0; }
-
-body {
-  font-family: sans-serif;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
-
-header {
-  background: #333;
-  color: #fff;
-  padding: 0.5rem;
-}
-
-header h1 {
-  display: inline-block;
-  font-size: 1.2rem;
-  margin-right: 1rem;
-}
-
-.toolbar button,
-.toolbar-label {
-  margin-right: 0.5rem;
-  padding: 0.4rem 0.8rem;
-  border: none;
-  border-radius: 0.3rem;
-  cursor: pointer;
-  background: #555;
-  color: #fff;
-  display: inline-block;
-  user-select: none;
-}
-
-.toolbar button:hover,
-.toolbar-label:hover {
-  background: #666;
-}
-
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-}
-
-#dropZone {
-  width: 100%;
-  max-width: 600px;
-  height: 150px;
-  border: 2px dashed #888;
-  border-radius: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #888;
-  margin-bottom: 1rem;
-}
-
-#pdfCanvas {
-  border: 1px solid #ccc;
-  max-width: 100%;
-  flex: 1;
-}
-
-.pagination {
-  margin-top: 0.5rem;
-}
-
-.pagination button {
-  padding: 0.3rem 0.6rem;
-}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PDF Editor WebApp — フル装備 + フォント選択</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <!-- PDF.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+  <!-- PDF-lib -->
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+  <!-- Fabric.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>📝 PDF Editor — フル装備 + フォント選択</h1>
+    <div class="toolbar">
+      <button id="addTextBtn">✏️ テキスト追加</button>
+      <label for="fontSelect" class="toolbar-label">🔤 フォント</label>
+      <select id="fontSelect" class="toolbar-select">
+        <option value="Helvetica">Helvetica</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Arial">Arial</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Verdana">Verdana</option>
+      </select>
+      <label for="imageInput" class="toolbar-label">🖼️ 画像挿入</label>
+      <button id="deletePageBtn">🗑️ ページ削除</button>
+      <button id="rotateBtn">🔄 回転</button>
+      <button id="mergeBtn">🔗 結合</button>
+      <button id="splitBtn">✂️ 分割</button>
+      <button id="saveBtn">💾 保存</button>
+      <button id="fileSelectBtn">📁 PDF選択</button>
+      <input type="file" id="fileInput" accept="application/pdf" style="position:absolute; left:-9999px; width:1px; height:1px;" />
+      <input type="file" id="mergeInput" accept="application/pdf" multiple style="position:absolute; left:-9999px; width:1px; height:1px;" />
+      <input type="file" id="imageInput" accept="image/*" style="opacity:0; position:absolute; left:0; top:0; width:1px; height:1px;" />
+    </div>
+  </header>
+  <main>
+    <div id="dropZone">ここにPDFをドラッグ＆ドロップ</div>
+    <canvas id="pdfCanvas"></canvas>
+    <div class="pagination">
+      <button id="prevPage">◀ 前</button>
+      <span id="pageInfo">0 / 0</span>
+      <button id="nextPage">次 ▶</button>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
