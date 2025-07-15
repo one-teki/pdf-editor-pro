@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF Editor WebApp — フル装備</title>
+  <title>PDF Editor WebApp — フル装備 + 画像挿入</title>
   <link rel="stylesheet" href="styles.css"/>
   <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -12,29 +12,20 @@
 </head>
 <body>
   <header>
-    <h1>📝 PDF Editor — フル装備</h1>
+    <h1>📝 PDF Editor — フル装備 + 画像挿入</h1>
     <div class="toolbar">
       <button id="addTextBtn">✏️ テキスト追加</button>
+      <button id="imageBtn">🖼️ 画像挿入</button>
       <button id="deletePageBtn">🗑️ ページ削除</button>
       <button id="rotateBtn">🔄 回転</button>
       <button id="mergeBtn">🔗 結合</button>
       <button id="splitBtn">✂️ 分割</button>
       <button id="saveBtn">💾 保存</button>
       <button id="fileSelectBtn">📁 ファイル選択</button>
-      <!-- 隠しファイルINPUT -->
-      <input
-        type="file"
-        id="fileInput"
-        accept="application/pdf"
-        style="position:absolute; left:-9999px; width:1px; height:1px;"
-      />
-      <input
-        type="file"
-        id="mergeInput"
-        accept="application/pdf"
-        multiple
-        style="position:absolute; left:-9999px; width:1px; height:1px;"
-      />
+      <!-- 隠しファイルINPUT群 -->
+      <input type="file" id="fileInput" accept="application/pdf" style="position:absolute; left:-9999px; width:1px; height:1px;" />
+      <input type="file" id="mergeInput" accept="application/pdf" multiple style="position:absolute; left:-9999px; width:1px; height:1px;" />
+      <input type="file" id="imageInput" accept="image/*" style="position:absolute; left:-9999px; width:1px; height:1px;" />
     </div>
   </header>
 

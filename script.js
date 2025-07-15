@@ -8,8 +8,8 @@ let pdfBytes,    // Uint8Array of current PDF
     pdfDocJS,    // PDF.js document
     currentPage = 1;
 
-const canvas  = document.getElementById('pdfCanvas');
-const ctx     = canvas.getContext('2d');
+const canvas   = document.getElementById('pdfCanvas');
+const ctx      = canvas.getContext('2d');
 const pageInfo = document.getElementById('pageInfo');
 
 // 画面にレンダリング
@@ -27,10 +27,7 @@ function renderPage(pageNum) {
 async function reloadDocument() {
   pdfBytes = await pdfDocLib.save();
   pdfDocJS = await pdfjsLib.getDocument({ data: pdfBytes }).promise;
-  // ページ数クリップ
-  if (currentPage > pdfDocJS.numPages) {
-    currentPage = pdfDocJS.numPages;
-  }
+  if (currentPage > pdfDocJS.numPages) currentPage = pdfDocJS.numPages;
   renderPage(currentPage);
 }
 
@@ -61,6 +58,8 @@ function setupEventListeners() {
   const fileInput     = document.getElementById('fileInput');
   const mergeBtn      = document.getElementById('mergeBtn');
   const mergeInput    = document.getElementById('mergeInput');
+  const imageBtn      = document.getElementById('imageBtn');
+  const imageInput    = document.getElementById('imageInput');
   const addTextBtn    = document.getElementById('addTextBtn');
   const deletePageBtn = document.getElementById('deletePageBtn');
   const rotateBtn     = document.getElementById('rotateBtn');
@@ -90,16 +89,10 @@ function setupEventListeners() {
 
   // ページ移動
   document.getElementById('prevPage').addEventListener('click', () => {
-    if (currentPage > 1) {
-      currentPage--;
-      renderPage(currentPage);
-    }
+    if (currentPage > 1) { currentPage--; renderPage(currentPage); }
   });
   document.getElementById('nextPage').addEventListener('click', () => {
-    if (currentPage < pdfDocJS.numPages) {
-      currentPage++;
-      renderPage(currentPage);
-    }
+    if (currentPage < pdfDocJS.numPages) { currentPage++; renderPage(currentPage); }
   });
 
   // テキスト追加
@@ -112,6 +105,30 @@ function setupEventListeners() {
     const font = await pdfDocLib.embedFont(StandardFonts.Helvetica);
     const page = pdfDocLib.getPages()[currentPage - 1];
     page.drawText(text, { x, y, size, font, color: rgb(0,0,0) });
+    await reloadDocument();
+  });
+
+  // 画像挿入
+  imageBtn.addEventListener('click', () => {
+    imageInput.value = null;
+    imageInput.click();
+  });
+  imageInput.addEventListener('change', async e => {
+    if (!e.target.files.length) return;
+    const file = e.target.files[0];
+    const arrayBuffer = await file.arrayBuffer();
+    let img;
+    if (file.type === 'image/png') {
+      img = await pdfDocLib.embedPng(arrayBuffer);
+    } else {
+      img = await pdfDocLib.embedJpg(arrayBuffer);
+    }
+    const page = pdfDocLib.getPages()[currentPage - 1];
+    const scale = parseFloat(prompt('画像の拡大率を指定 (例: 0.5)', 0.5));
+    const { width, height } = img.scale(scale);
+    const x = parseInt(prompt('X座標をpxで指定 (例: 50)', 50), 10);
+    const y = parseInt(prompt('Y座標をpxで指定 (例: 100)', 100), 10);
+    page.drawImage(img, { x, y, width, height });
     await reloadDocument();
   });
 
@@ -138,9 +155,9 @@ function setupEventListeners() {
   mergeInput.addEventListener('change', async e => {
     const files = Array.from(e.target.files);
     for (const f of files) {
-      const otherBytes = await f.arrayBuffer();
-      const otherDoc   = await PDFDocument.load(otherBytes);
-      const copied     = await pdfDocLib.copyPages(otherDoc, otherDoc.getPageIndices());
+      const otherArr = await f.arrayBuffer();
+      const otherDoc = await PDFDocument.load(otherArr);
+      const copied   = await pdfDocLib.copyPages(otherDoc, otherDoc.getPageIndices());
       copied.forEach(p => pdfDocLib.addPage(p));
     }
     await reloadDocument();
@@ -148,17 +165,16 @@ function setupEventListeners() {
 
   // 分割
   splitBtn.addEventListener('click', async () => {
-    const idx = currentPage; // 1オリジン
+    const idx = currentPage;
     // 前半
     const doc1 = await PDFDocument.create();
-    const [ , , ..._ ] = []; // ダミー
     const pages1 = await doc1.copyPages(pdfDocLib, [...Array(idx).keys()]);
     pages1.forEach(p => doc1.addPage(p));
     const bytes1 = await doc1.save();
     download(bytes1, `part1_${idx}pまで.pdf`);
     // 後半
     const total = pdfDocLib.getPageCount();
-    const doc2  = await PDFDocument.create();
+    const doc2   = await PDFDocument.create();
     const pages2 = await doc2.copyPages(pdfDocLib, Array.from({length: total-idx}, (_,i)=>i+idx));
     pages2.forEach(p => doc2.addPage(p));
     const bytes2 = await doc2.save();
@@ -166,9 +182,7 @@ function setupEventListeners() {
   });
 
   // 保存
-  saveBtn.addEventListener('click', () => {
-    download(pdfBytes, 'edited.pdf');
-  });
+  saveBtn.addEventListener('click', () => download(pdfBytes, 'edited.pdf'));
 }
 
 window.addEventListener('DOMContentLoaded', setupEventListeners);
