@@ -3,46 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF Editor WebApp — フル装備 + 画像移動・リサイズ</title>
+  <title>PDF Editor WebApp</title>
   <link rel="stylesheet" href="styles.css"/>
-  <!-- PDF.js -->
+  <!-- PDF.js ライブラリ -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-  <!-- PDF-lib -->
-  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
-  <!-- Fabric.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/4.6.0/fabric.min.js"></script>
 </head>
 <body>
   <header>
-    <h1>📝 PDF Editor — フル装備 + 画像移動・リサイズ</h1>
-    <nav class="toolbar">
-      <button id="addTextBtn">✏️ テキスト追加</button>
-      <select id="fontSelect" class="toolbar-select">
-        <option value="Helvetica">Helvetica</option>
-        <option value="Times New Roman">Times New Roman</option>
-        <option value="Courier New">Courier New</option>
-        <option value="Arial">Arial</option>
-        <option value="Georgia">Georgia</option>
-        <option value="Verdana">Verdana</option>
-      </select>
-      <button id="imageBtn">🖼️ 画像挿入</button>
-      <button id="deletePageBtn">🗑️ ページ削除</button>
+    <h1>PDF Editor</h1>
+    <div class="toolbar">
+      <button id="addTextBtn">📝 テキスト</button>
+      <button id="deletePageBtn">🗑️ 削除</button>
       <button id="rotateBtn">🔄 回転</button>
-      <button id="mergeBtn">🔗 結合</button>
-      <button id="splitBtn">✂️ 分割</button>
-      <button id="saveBtn">💾 保存</button>
-      <button id="fileSelectBtn">📁 PDF選択</button>
-      <input type="file" id="fileInput" accept="application/pdf" hidden />
-      <input type="file" id="mergeInput" accept="application/pdf" multiple hidden />
-      <input type="file" id="imageInput" accept="image/*" hidden />
-    </nav>
+      <button id="fileSelectBtn">📁 ファイル選択</button>
+      <!-- 画面外に配置して隠す -->
+      <input
+        type="file"
+        id="fileInput"
+        accept="application/pdf"
+        style="position:absolute; left:-9999px; width:1px; height:1px;"
+      />
+    </div>
   </header>
 
   <main>
-    <section id="dropZone">ここにPDFをドラッグ＆ドロップ</section>
-    <div id="canvasContainer">
-      <canvas id="pdfCanvas"></canvas>
-    </div>
+    <div id="dropZone">ここにPDFをドラッグ＆ドロップ</div>
+    <canvas id="pdfCanvas"></canvas>
     <div class="pagination">
       <button id="prevPage">◀ 前</button>
       <span id="pageInfo">0 / 0</span>

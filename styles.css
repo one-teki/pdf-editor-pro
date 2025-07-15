@@ -1,46 +1,66 @@
-/* リセット */
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; }
+* { box-sizing: border-box; margin:0; padding:0; }
 
-/* レイアウト */
-body { display: flex; flex-direction: column; font-family: sans-serif; }
-header { background: #333; color: #fff; padding: 0.5rem 1rem; }
-header h1 { display: inline-block; font-size: 1.25rem; vertical-align: middle; }
-.toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }
-.toolbar button, .toolbar-select {
-  background: #555; color: #fff; border: none; border-radius: 4px;
-  padding: 0.5rem 1rem; font-size: 0.9rem; cursor: pointer;
-  transition: background 0.2s;
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
 }
-.toolbar-select { appearance: none; }
-.toolbar button:hover, .toolbar-select:hover { background: #777; }
 
-main { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 1rem; gap: 1rem; }
+header {
+  background: #333;
+  color: #fff;
+  padding: 0.5rem;
+}
+
+header h1 {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+.toolbar button {
+  margin-right: 0.5rem;
+  padding: 0.4rem 0.8rem;
+  border: none;
+  border-radius: 0.3rem;
+  cursor: pointer;
+}
+
+.toolbar button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+}
+
 #dropZone {
-  width: 100%; max-width: 800px; height: 120px;
-  border: 3px dashed #aaa; border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  color: #888; font-size: 1rem;
-  transition: background 0.3s, border-color 0.3s;
+  width: 100%;
+  max-width: 600px;
+  height: 150px;
+  border: 2px dashed #888;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  margin-bottom: 1rem;
 }
-#dropZone.dragover { background: rgba(200,200,200,0.2); border-color: #888; }
 
-#canvasContainer { flex: 1; width: 100%; max-width: 800px; overflow: auto; border: 1px solid #ccc; border-radius: 8px; }
-#pdfCanvas { display: block; margin: 0 auto; }
+#pdfCanvas {
+  border: 1px solid #ccc;
+  max-width: 100%;
+  flex: 1;
+}
 
-.pagination { display: flex; align-items: center; gap: 1rem; }
-.pagination button { background: #555; color: #fff; border: none; border-radius: 4px;
-  padding: 0.4rem 0.8rem; cursor: pointer; transition: background 0.2s; }
-.pagination button:hover { background: #777; }
-#pageInfo { font-size: 1rem; }
+.pagination {
+  margin-top: 0.5rem;
+}
 
-/* Fabric.js オブジェクト選択ハンドル */
-.fabric-canvas { border: none !important; }
-canvas.fabric-overlay { position: absolute; top: 0; left: 0; }
-
-/* モバイル対応 */
-@media (max-width: 600px) {
-  .toolbar { justify-content: center; }
-  .toolbar button, .toolbar-select { flex: 1 1 auto; }
-  #dropZone { font-size: 0.9rem; }
+.pagination button {
+  padding: 0.3rem 0.6rem;
 }
