@@ -58,7 +58,6 @@ function setupEventListeners() {
   const fileInput     = document.getElementById('fileInput');
   const mergeBtn      = document.getElementById('mergeBtn');
   const mergeInput    = document.getElementById('mergeInput');
-  const imageBtn      = document.getElementById('imageBtn');
   const imageInput    = document.getElementById('imageInput');
   const addTextBtn    = document.getElementById('addTextBtn');
   const deletePageBtn = document.getElementById('deletePageBtn');
@@ -108,23 +107,16 @@ function setupEventListeners() {
     await reloadDocument();
   });
 
-  // 画像挿入
-  imageBtn.addEventListener('click', () => {
-    imageInput.value = null;
-    imageInput.click();
-  });
+  // 画像挿入 （label 連携）
   imageInput.addEventListener('change', async e => {
     if (!e.target.files.length) return;
     const file = e.target.files[0];
     const arrayBuffer = await file.arrayBuffer();
     let img;
-    if (file.type === 'image/png') {
-      img = await pdfDocLib.embedPng(arrayBuffer);
-    } else {
-      img = await pdfDocLib.embedJpg(arrayBuffer);
-    }
-    const page = pdfDocLib.getPages()[currentPage - 1];
-    const scale = parseFloat(prompt('画像の拡大率を指定 (例: 0.5)', 0.5));
+    if (file.type === 'image/png') img = await pdfDocLib.embedPng(arrayBuffer);
+    else img = await pdfDocLib.embedJpg(arrayBuffer);
+    const page    = pdfDocLib.getPages()[currentPage - 1];
+    const scale   = parseFloat(prompt('画像の拡大率を指定 (例: 0.5)', 0.5));
     const { width, height } = img.scale(scale);
     const x = parseInt(prompt('X座標をpxで指定 (例: 50)', 50), 10);
     const y = parseInt(prompt('Y座標をpxで指定 (例: 100)', 100), 10);
@@ -170,15 +162,13 @@ function setupEventListeners() {
     const doc1 = await PDFDocument.create();
     const pages1 = await doc1.copyPages(pdfDocLib, [...Array(idx).keys()]);
     pages1.forEach(p => doc1.addPage(p));
-    const bytes1 = await doc1.save();
-    download(bytes1, `part1_${idx}pまで.pdf`);
+    download(await doc1.save(), `part1_${idx}pまで.pdf`);
     // 後半
     const total = pdfDocLib.getPageCount();
     const doc2   = await PDFDocument.create();
-    const pages2 = await doc2.copyPages(pdfDocLib, Array.from({length: total-idx}, (_,i)=>i+idx));
+    const pages2 = await doc2.copyPages(pdfDocLib, Array.from({length: total-idx}, (_, i) => i+idx));
     pages2.forEach(p => doc2.addPage(p));
-    const bytes2 = await doc2.save();
-    download(bytes2, `part2_${idx+1}pから.pdf`);
+    download(await doc2.save(), `part2_${idx+1}pから.pdf`);
   });
 
   // 保存

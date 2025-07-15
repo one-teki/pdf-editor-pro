@@ -15,7 +15,7 @@
     <h1>📝 PDF Editor — フル装備 + 画像挿入</h1>
     <div class="toolbar">
       <button id="addTextBtn">✏️ テキスト追加</button>
-      <button id="imageBtn">🖼️ 画像挿入</button>
+      <label for="imageInput" class="toolbar-label">🖼️ 画像挿入</label>
       <button id="deletePageBtn">🗑️ ページ削除</button>
       <button id="rotateBtn">🔄 回転</button>
       <button id="mergeBtn">🔗 結合</button>
@@ -25,7 +25,7 @@
       <!-- 隠しファイルINPUT群 -->
       <input type="file" id="fileInput" accept="application/pdf" style="position:absolute; left:-9999px; width:1px; height:1px;" />
       <input type="file" id="mergeInput" accept="application/pdf" multiple style="position:absolute; left:-9999px; width:1px; height:1px;" />
-      <input type="file" id="imageInput" accept="image/*" style="position:absolute; left:-9999px; width:1px; height:1px;" />
+      <input type="file" id="imageInput" accept="image/*" style="opacity:0; position:absolute; left:0; top:0; width:1px; height:1px;" />
     </div>
   </header>
 

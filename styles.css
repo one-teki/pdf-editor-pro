@@ -19,7 +19,8 @@ header h1 {
   margin-right: 1rem;
 }
 
-.toolbar button {
+.toolbar button,
+.toolbar-label {
   margin-right: 0.5rem;
   padding: 0.4rem 0.8rem;
   border: none;
@@ -27,9 +28,12 @@ header h1 {
   cursor: pointer;
   background: #555;
   color: #fff;
+  display: inline-block;
+  user-select: none;
 }
 
-.toolbar button:hover {
+.toolbar button:hover,
+.toolbar-label:hover {
   background: #666;
 }
 
