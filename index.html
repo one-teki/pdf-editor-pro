@@ -16,7 +16,13 @@
       <button id="deletePageBtn">🗑️ 削除</button>
       <button id="rotateBtn">🔄 回転</button>
       <button id="fileSelectBtn">📁 ファイル選択</button>
-      <input type="file" id="fileInput" accept="application/pdf" style="display:none"/>
+      <!-- 画面外に配置して隠す -->
+      <input
+        type="file"
+        id="fileInput"
+        accept="application/pdf"
+        style="position:absolute; left:-9999px; width:1px; height:1px;"
+      />
     </div>
   </header>
 
