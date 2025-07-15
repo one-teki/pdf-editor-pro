@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PDF Editor WebApp — フル装備 + フォント選択</title>
+  <title>PDF Editor WebApp — フル装備 + 画像移動・リサイズ</title>
   <link rel="stylesheet" href="styles.css"/>
   <!-- PDF.js -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
@@ -14,10 +14,9 @@
 </head>
 <body>
   <header>
-    <h1>📝 PDF Editor — フル装備 + フォント選択</h1>
-    <div class="toolbar">
+    <h1>📝 PDF Editor — フル装備 + 画像移動・リサイズ</h1>
+    <nav class="toolbar">
       <button id="addTextBtn">✏️ テキスト追加</button>
-      <label for="fontSelect" class="toolbar-label">🔤 フォント</label>
       <select id="fontSelect" class="toolbar-select">
         <option value="Helvetica">Helvetica</option>
         <option value="Times New Roman">Times New Roman</option>
@@ -26,27 +25,31 @@
         <option value="Georgia">Georgia</option>
         <option value="Verdana">Verdana</option>
       </select>
-      <label for="imageInput" class="toolbar-label">🖼️ 画像挿入</label>
+      <button id="imageBtn">🖼️ 画像挿入</button>
       <button id="deletePageBtn">🗑️ ページ削除</button>
       <button id="rotateBtn">🔄 回転</button>
       <button id="mergeBtn">🔗 結合</button>
       <button id="splitBtn">✂️ 分割</button>
       <button id="saveBtn">💾 保存</button>
       <button id="fileSelectBtn">📁 PDF選択</button>
-      <input type="file" id="fileInput" accept="application/pdf" style="position:absolute; left:-9999px; width:1px; height:1px;" />
-      <input type="file" id="mergeInput" accept="application/pdf" multiple style="position:absolute; left:-9999px; width:1px; height:1px;" />
-      <input type="file" id="imageInput" accept="image/*" style="opacity:0; position:absolute; left:0; top:0; width:1px; height:1px;" />
-    </div>
+      <input type="file" id="fileInput" accept="application/pdf" hidden />
+      <input type="file" id="mergeInput" accept="application/pdf" multiple hidden />
+      <input type="file" id="imageInput" accept="image/*" hidden />
+    </nav>
   </header>
+
   <main>
-    <div id="dropZone">ここにPDFをドラッグ＆ドロップ</div>
-    <canvas id="pdfCanvas"></canvas>
+    <section id="dropZone">ここにPDFをドラッグ＆ドロップ</section>
+    <div id="canvasContainer">
+      <canvas id="pdfCanvas"></canvas>
+    </div>
     <div class="pagination">
       <button id="prevPage">◀ 前</button>
       <span id="pageInfo">0 / 0</span>
       <button id="nextPage">次 ▶</button>
     </div>
   </main>
+
   <script src="script.js"></script>
 </body>
 </html>
